@@ -1,6 +1,6 @@
-Arga Théo
-Cadorel Jules
-Fisher Daniel
+Arga Théo  
+Cadorel Jules  
+Fisher Daniel  
 
 # PageRank2024 - Large Scale Data Management
 Ce projet compare les performances de l'algorithme PageRank en utilisant deux implémentations PySpark :
