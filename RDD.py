@@ -65,7 +65,7 @@ if __name__ == "__main__":
     end_time_row = spark.createDataFrame([Row(url="END_TIME", rank=lit(elapsed_time))])
 
     # Save results and append elapsed time row
-    output_path = "gs://$BUCKET_NAME/$OUTPUT_PATH"
+    output_path = "gs://pagerank_bucket_100/$OUTPUT_PATH"
     ranks.saveAsTextFile(output_path)
 
     # Stop Spark session
