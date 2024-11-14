@@ -63,7 +63,6 @@ if __name__ == "__main__":
     end_time = time.time()
     elapsed_time = end_time - start_time
     print(f"Total PageRank computation time: {elapsed_time:.2f} seconds")
-    end_time_row = spark.createDataFrame([Row(url="END_TIME", rank=lit(elapsed_time))])
 
     # Save results and append elapsed time row
     output_path = "gs://pagerank_bucket_100/output"
