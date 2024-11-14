@@ -1,4 +1,3 @@
-```
 #!/bin/bash
 
 # Télécharger les données PageRank
