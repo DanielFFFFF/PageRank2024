@@ -5,6 +5,7 @@ from operator import add
 from typing import Iterable, Tuple
 from pyspark.resultiterable import ResultIterable
 from pyspark.sql import SparkSession
+from pyspark.sql import Row
 
 def computeContribs(urls: Iterable[str], rank: float) -> Iterable[Tuple[str, float]]:
     """
