@@ -6,19 +6,13 @@ from pyspark.sql.functions import col, lit, sum as spark_sum
 from pyspark.sql import Row
 
 
-def split_neighbours(line: str):
-    """
-    Parses a URL pair string into URLs pair.
-
-    Args:
-        line (str): A string containing a URL pair separated by whitespace.
-
-    Returns:
-        tuple: A tuple containing the two URLs.
-    """
-    parts = re.split(r'\\s+', line)
+def split_neighbours(row):
+    parts = row.split()
+    if len(parts) < 3:
+        # Handle unexpected input, either by logging or returning a default value
+        print(f"Unexpected input format: {row}")
+        return (None, None)  # or use appropriate default/error handling
     return (parts[0], parts[2])
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
