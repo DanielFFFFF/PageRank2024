@@ -44,7 +44,7 @@ if __name__ == "__main__":
     spark = SparkSession.builder.appName("PythonPageRank").getOrCreate()
 
     # Load input file and initialise links
-    lines = spark.read.text("gs://$BUCKET_NAME/$INPUT_FILE_PATH").rdd.map(lambda r: r[0])
+    lines = spark.read.text("gs://pgerank_bucket_100/small_page_links.nt").rdd.map(lambda r: r[0])
     links = lines.map(lambda urls: parseNeighbours(urls)).distinct().groupByKey().cache()
 
     # Initialise ranks for each URL
