@@ -23,11 +23,6 @@ def parseNeighbors(urls: str) -> Tuple[str, str]:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: pagerank <file> <iterations>", file=sys.stderr)
-        sys.exit(-1)
-
-
 
     num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
     # Define the bucket and path for the text file
