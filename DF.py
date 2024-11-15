@@ -32,8 +32,8 @@ if __name__ == "__main__":
     # Grouper par source pour créer une liste des liens sortants
     links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
 
-    # Initialise ranks with 1.0 for each URL
-    ranks_df = neighbours_df.select("url").distinct().withColumn("rank", lit(1.0))
+    # Initialiser les rangs avec une valeur de 1.0 pour chaque URL
+    ranks = links.select("src").withColumn("rank", lit(1.0))
 
     # PageRank iterations
     for iteration in range(iterations):
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # Combine ranks with elapsed time and save to GCS
     output_path = "gs://pagerank_bucket_100/output"
-    ranks_df.write.mode("overwrite").csv(output_path)
+    ranks.write.mode("overwrite").csv(output_path)
 
     # Finally, Stop Spark session
     spark.stop()
