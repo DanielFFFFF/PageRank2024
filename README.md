@@ -20,9 +20,9 @@ une basée sur des DataFrames et l'autre sur des RDDs. Nous avons testé les deu
 
 
 ## Entitées avec les plus gros page rank :
-### Avec https://raw.githubusercontent.com/momo54/large_scale_data_management/main/small_page_links.nt
-L'entité http://dbpedia.org/resource/Anatolia possède le meilleur pagerank avec 0.293785843268494.
-Le jeu de données est petit et ne comprend que des entités commençant par "A", ce qui donne un avantage à l'Anatolie dans cette sélection limitée. De plus, étant une région grande et historiquement importante, elle a probablement de nombreux liens sortants vers d'autres sujets, ce qui augmente son pagerank.
+### Avec https://raw.githubusercontent.com/momo54/large_scale_data_management/main/small_page_links.nt  
+L'entité http://dbpedia.org/resource/Anatolia possède le meilleur pagerank avec 0.293785843268494.  
+Le jeu de données est petit et ne comprend que des entités commençant par "A", ce qui donne un avantage à l'Anatolie dans cette sélection limitée. De plus, étant une région grande et historiquement importante, elle a probablement de nombreux liens sortants vers d'autres sujets, ce qui augmente son pagerank.  
 
 L'entité http://dbpedia.org/resource/Acronym_and_initialism possède le deuxième meilleur pagerank avec 0.29080001821188584.
 L'entité http://dbpedia.org/resource/Ada_Lovelace possède le troisième meilleur pagerank avec 0.2872584197502371.
