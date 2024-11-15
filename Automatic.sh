@@ -24,11 +24,14 @@ gcloud config set project $PROJECT_ID
 gsutil mb -l $REGION gs://$BUCKET_NAME/ || echo "Bucket already exists."
 
 # Download the PySpark PageRank script using DataFrames with a timer
-rm DF.py
-curl -o DF.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
+# rm DF.py
+# curl -o DF.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
 
-rm DFURL.py
-curl -o DFURL.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DFURL.py
+# rm DFURL.py
+# curl -o DFURL.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DFURL.py
+
+rm RDD.py
+curl -o RDD.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/RDD.py
 
 # Copy the input file to the bucket
 gsutil cp $INPUT_FILE_PATH gs://$BUCKET_NAME/
