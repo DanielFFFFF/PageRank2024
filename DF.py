@@ -24,8 +24,8 @@ if __name__ == "__main__":
     spark = SparkSession.builder.appName("PythonPageRankDataFrame").getOrCreate()
 
     # Read input file and parse neighbours
-    input_path = sys.argv[1]
-    iterations = int(sys.argv[2])
+    input_path = "gs://pagerank_bucket_100/small_page_links.nt"
+    iterations = 10
     lines = spark.read.text(input_path)
     neighbours_df = lines.rdd.map(lambda row: split_neighbours(row[0])).toDF(["url", "neighbour"])
 
@@ -34,22 +34,33 @@ if __name__ == "__main__":
 
     # PageRank iterations
     for iteration in range(iterations):
-        # Compute contributions from neighbours
-        contribs_df = neighbours_df.join(ranks_df, neighbours_df.url == ranks_df.url) \
-            .select(neighbours_df["neighbour"].alias("url"), (ranks_df["rank"] / 2).alias("contrib"))
+        # Calcul des contributions de chaque lien
+        contribs = links.alias("l").join(ranks.alias("r"), col("l.src") == col("r.src")) \
+            .select(
+            col("l.src").alias("src"),
+            explode(col("l.links")).alias("dst"),
+            (col("r.rank") / size(col("l.links"))).alias("contrib")
+        )
 
-        # Aggregate contributions and apply PageRank formula
-        ranks_df = contribs_df.groupBy("url").agg(spark_sum("contrib").alias("rank"))
-        ranks_df = ranks_df.withColumn("rank", ranks_df["rank"] * 0.85 + 0.15)
+        # Repartitionner les contributions avant l'agrégation pour éviter les shuffles si partitionnement activé
+        if use_partition:
+            contribs = contribs.repartition(num_workers, "dst")
+
+        # Calcul des nouveaux rangs par agrégation des contributions
+        ranks = contribs.groupBy("dst").agg(spark_sum("contrib").alias("rank"))
+
+        # Appliquer le facteur de décroissance de PageRank
+        ranks = ranks.withColumn("rank", col("rank") * 0.85 + 0.15)
+
+        # Renommer `dst` en `src` pour l'itération suivante
+        ranks = ranks.withColumnRenamed("dst", "src")
 
     # Calculate elapsed time & Append as a row
     end_time = time.time()
     elapsed_time = end_time - start_time
-    end_time_row = spark.createDataFrame([Row(url="END_TIME", rank=lit(elapsed_time))])
 
     # Combine ranks with elapsed time and save to GCS
-    output_df = ranks_df.unionByName(end_time_row)
-    output_path = f"gs://$BUCKET_NAME/$OUTPUT_PATH"
+    output_path = "gs://pagerank_bucket_100/output"
     ranks_df.write.mode("overwrite").csv(output_path)
 
     # Finally, Stop Spark session
