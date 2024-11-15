@@ -38,7 +38,7 @@ gcloud dataproc clusters create $CLUSTER_NAME \
     --zone=$ZONE \
     --master-machine-type=n1-standard-2 \
     --master-boot-disk-size=50GB \
-    --num-workers=1 \
+    --num-workers=2 \
     --worker-machine-type=n1-standard-2 \
     --worker-boot-disk-size=50GB \
     --image-version=2.0-debian10
