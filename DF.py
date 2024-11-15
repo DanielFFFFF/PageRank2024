@@ -70,10 +70,7 @@ if __name__ == "__main__":
     bucket = client.get_bucket(bucket_name)
     # Create a new blob (file) and upload the content
     blob = bucket.blob(text_file_path)
-    content = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF with URL partitioning\n"
-
-    # Upload the new content back to the file
-    blob.upload_from_string(content)
+    content = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF without URL partitioning\n"
 
     # Upload the new content back to the file
     blob.upload_from_string(content)
