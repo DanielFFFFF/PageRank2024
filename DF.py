@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 from typing import Tuple
 from pyspark.sql.functions import col, explode, lit, sum as spark_sum, size, hash
 from pyspark.sql import functions as F
-
+from google.cloud import storage
 
 
 def parse_neighbors(line: str) -> Tuple[str, str]:
@@ -21,6 +21,10 @@ if __name__ == "__main__":
     # Start timer & Initialise Spark session
     start_time = time.time()
     spark = SparkSession.builder.appName("PythonPageRankDataFrame").getOrCreate()
+
+    # Define the bucket and path for the text file
+    bucket_name = "pagerank_bucket_100"
+    text_file_path = "output/elapsed_time.txt"
 
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
@@ -61,6 +65,14 @@ if __name__ == "__main__":
     # Combine ranks with elapsed time and save to GCS
     output_path = "gs://pagerank_bucket_100/output"
     ranks.write.mode("overwrite").csv(output_path)
+
+    # Access the bucket
+    client = storage.Client()
+    bucket = client.get_bucket(bucket_name)
+
+    # Create a new blob (file) and upload the content
+    blob = bucket.blob(text_file_path)
+    blob.upload_from_string(f"Elapsed Time: {elapsed_time:.2f} seconds")
 
     # Finally, Stop Spark session
     spark.stop()
