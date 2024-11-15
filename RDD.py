@@ -33,43 +33,47 @@ if __name__ == "__main__":
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
 
-
-    spark = SparkSession.builder \
-        .appName("OptimizedPythonPageRank") \
-        .config("spark.executor.memory", "4g") \
-        .config("spark.driver.memory", "4g") \
-        .config("spark.executor.memoryOverhead", "1g") \
-        .config("spark.speculation", "true") \
+    # Initialize the spark context.
+    spark = SparkSession \
+        .builder \
+        .appName("PythonPageRank") \
+        .config("spark.ui.showConsoleProgress", "true") \
+        .config("spark.yarn.historyServer.allowTracking", "true") \
+        .config("spark.executor.heartbeatInterval", "86400") \
+        .config("spark.network.timeout", "86400") \
+        .config("spark.dynamicAllocation.executorIdleTimeout", "86400") \
         .getOrCreate()
 
-    sc = spark.sparkContext
+
 
     # Chargement et parsing du fichier d'entrée
-    lines = sc.textFile(input_path)
-    links = lines.map(lambda urls: parseNeighbors(urls)).distinct().groupByKey()
+    lines = spark.read.text(input_path).rdd.map(lambda r: r[0])
+    links = lines.map(lambda urls: parseNeighbors(urls)
+                      ).distinct().groupByKey().cache()
 
     # Initialisation des rangs avec une valeur de 1.0
-    ranks = links.mapValues(lambda _: 1.0)
+    ranks = links.map(lambda url_neighbors: (url_neighbors[0], 1.0))
     # Start timer & initialise Spark session
     start_time = time.time()
     num_partitions = num_nodes
     # Boucle d'itération pour calculer PageRank
     for iteration in range(10):
-        contribs = links.join(ranks).flatMap(
-            lambda url_urls_rank: computeContribs(url_urls_rank[1][0], url_urls_rank[1][1])
-        )
+        # Calculates URL contributions to the rank of other URLs.
+        contribs = links.join(ranks).flatMap(lambda url_urls_rank: computeContribs(
+            url_urls_rank[1][0], url_urls_rank[1][1]  # type: ignore[arg-type]
+        ))
 
-        # Utilisation de repartition pour équilibrer les données
-        contribs = contribs.repartition(num_partitions)
-        ranks = contribs.reduceByKey(add).mapValues(lambda rank: rank * 0.85 + 0.15)
+        # Re-calculates URL ranks based on neighbor contributions.
+        ranks = contribs.reduceByKey(add).mapValues(
+            lambda rank: rank * 0.85 + 0.15)
 
     # Calculate elapsed time & Append as a row
     end_time = time.time()
     elapsed_time = end_time - start_time
 
 
-    output_path = f"gs://pagerank_bucket_100/RDD/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    ranks.coalesce(1).saveAsTextFile(output_path)
+    output_path = "gs://pagerank_bucket_100/RDD/output"
+    ranks.saveAsTextFile(output_path)
 
     # Access the bucket
     client = storage.Client()
