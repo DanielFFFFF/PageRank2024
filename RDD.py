@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     # Combine ranks with elapsed time and save to GCS
     output_path = "gs://pagerank_bucket_100/output"
-    ranks.write.mode("overwrite").csv(output_path)
+    ranks.coalesce(1).saveAsTextFile(output_path)
 
     # Access the bucket
     client = storage.Client()
