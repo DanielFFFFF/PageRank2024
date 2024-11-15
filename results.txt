@@ -1,8 +1,11 @@
-1 cluster
-
+1 single node
 DF without URL partitionning : Elapsed Time: 49.35 seconds
 
+2 workers nodes :
+DF without URL Elapsed Time: 36.04 seconds
 
-
-4 nodes :
+3 worker nodes :
 DF without URL partitionning : Elapsted Time : Elapsed Time: 32.03 seconds
+
+4 worker nodes :
+DF without URL partitionning Elapsed Time: 31.25 seconds

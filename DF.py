@@ -14,9 +14,6 @@ def parse_neighbors(line: str) -> Tuple[str, str]:
     return parts[0], parts[2]
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: pagerank <file> <iterations>", file=sys.stderr)
-        sys.exit(-1)
 
     # Start timer & Initialise Spark session
     start_time = time.time()
@@ -32,6 +29,7 @@ if __name__ == "__main__":
     lines = spark.read.text(input_path)
     neighbours_df = lines.rdd.map(lambda row: parse_neighbors(row[0])).toDF(["url", "neighbour"])
     links = lines.rdd.map(lambda row: parse_neighbors(row.value)).toDF(["src", "dst"])
+
 
     # Grouper par source pour créer une liste des liens sortants
     links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
@@ -69,10 +67,21 @@ if __name__ == "__main__":
     # Access the bucket
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
-
+    num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
     # Create a new blob (file) and upload the content
     blob = bucket.blob(text_file_path)
-    blob.upload_from_string(f"Elapsed Time: {elapsed_time:.2f} seconds")
+    content_to_append = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF without URL partitioning\n"
+
+    if blob.exists():
+        # Download the existing content
+        current_content = blob.download_as_text()
+        new_content = current_content + content_to_append
+    else:
+        # If the file doesn't exist, just use the new content
+        new_content = content_to_append
+
+    # Upload the new content back to the file
+    blob.upload_from_string(new_content)
 
     # Finally, Stop Spark session
     spark.stop()
