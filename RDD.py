@@ -33,7 +33,7 @@ if __name__ == "__main__":
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
 
 
-    SparkSession.builder \
+    spark = SparkSession.builder \
         .appName("OptimizedPythonPageRank") \
         .config("spark.executor.memory", "4g") \
         .config("spark.driver.memory", "4g") \
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         .config("spark.speculation", "true") \
         .getOrCreate()
 
-    spark = spark.sparkContext
+    SC = spark.sparkContext
 
     # Chargement et parsing du fichier d'entrée
     lines = sc.textFile("gs://" + bucket_name + "/" + input_path)
