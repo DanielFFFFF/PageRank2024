@@ -44,7 +44,7 @@ if __name__ == "__main__":
     sc = spark.sparkContext
 
     # Chargement et parsing du fichier d'entrée
-    lines = sc.textFile("gs://" + bucket_name + "/" + input_path)
+    lines = sc.textFile(input_path)
     links = lines.map(lambda urls: parseNeighbors(urls)).distinct().groupByKey()
 
     # Initialisation des rangs avec une valeur de 1.0
