@@ -44,7 +44,7 @@ for PYSCRIPT in *.py; do
     echo "Processing script: $PYSCRIPT"
 
     # Loop through 1 to 4 nodes configuration
-    for WORKERS in 1 2 4; do
+    for WORKERS in 1; do
         echo "Creating cluster with $WORKERS worker node(s) for script $PYSCRIPT..."
 
         if [ $WORKERS -eq 1 ]; then
