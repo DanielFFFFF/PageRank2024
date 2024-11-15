@@ -2,6 +2,7 @@ import re
 import sys
 import time
 from pyspark.sql import SparkSession
+from typing import Tuple
 from pyspark.sql.functions import col, lit, sum as spark_sum
 from pyspark.sql import Row
 
