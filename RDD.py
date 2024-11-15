@@ -33,9 +33,6 @@ if __name__ == "__main__":
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
 
-    # Start timer & initialise Spark session
-    start_time = time.time()
-
     # Initialize the spark context.
     spark = SparkSession \
         .builder \
@@ -56,7 +53,8 @@ if __name__ == "__main__":
 
     # Initialisation des rangs avec une valeur de 1.0
     ranks = links.map(lambda url_neighbors: (url_neighbors[0], 1.0))
-
+    # Start timer & initialise Spark session
+    start_time = time.time()
     num_partitions = num_nodes
     # Boucle d'itération pour calculer PageRank
     for iteration in range(10):
@@ -74,7 +72,7 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
 
 
-    output_path = "gs://pagerank_bucket_100/RDD/output"
+    output_path = "gs://pagerank_bucket_100/RDD/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     ranks.saveAsTextFile(output_path)
 
     # Access the bucket
