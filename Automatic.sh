@@ -25,7 +25,7 @@ gsutil mb -l $REGION gs://$BUCKET_NAME/ || echo "Bucket already exists."
 
 # Download the PySpark PageRank script using DataFrames with a timer
 rm DF.py
-#curl -o DF.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
+curl -o DF.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
 
 rm DFURL.py
 curl -o DFURL.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DFURL.py
@@ -38,7 +38,7 @@ for PYSCRIPT in *.py; do
     echo "Processing script: $PYSCRIPT"
 
     # Loop through 1 to 4 nodes configuration
-    for WORKERS in 1 2; do
+    for WORKERS in 1 2 4; do
         echo "Creating cluster with $WORKERS worker node(s) for script $PYSCRIPT..."
 
         if [ $WORKERS -eq 1 ]; then
