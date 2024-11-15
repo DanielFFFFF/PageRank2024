@@ -44,8 +44,7 @@ if __name__ == "__main__":
     # Initialiser les rangs avec une valeur de 1.0 pour chaque URL
     ranks = links.select("src").withColumn("rank", lit(1.0))
 
-    # Start timer & Initialise Spark session
-    start_time = time.time()
+
     # PageRank iterations
     for iteration in range(iterations):
         # Calcul des contributions de chaque lien

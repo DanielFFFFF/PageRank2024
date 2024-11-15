@@ -16,6 +16,8 @@ def parse_neighbors(line: str) -> Tuple[str, str]:
 if __name__ == "__main__":
     num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
 
+    # Start timer & Initialise Spark session
+    start_time = time.time()
     spark = SparkSession.builder.appName("PythonPageRankDataFrame").getOrCreate()
 
     # Define the bucket and path for the text file
@@ -37,8 +39,7 @@ if __name__ == "__main__":
     ranks = links.select("src").withColumn("rank", lit(1.0))
 
 
-    # Start timer & Initialise Spark session
-    start_time = time.time()
+
     # PageRank iterations
     for iteration in range(iterations):
         # Calcul des contributions de chaque lien
