@@ -35,7 +35,6 @@ curl -o RDD.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/h
 
 # Copy the input file to the bucket
 gsutil cp $INPUT_FILE_PATH gs://$BUCKET_NAME/
-gsutil rm -r gs://pagerank_bucket_100/output
 
 # Loop through all .py files in the current directory
 for PYSCRIPT in *.py; do

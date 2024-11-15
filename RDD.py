@@ -1,6 +1,7 @@
 import re
 import sys
 import time
+from datetime import datetime
 from operator import add
 from typing import Iterable, Tuple
 from pyspark.sql import SparkSession
@@ -66,8 +67,8 @@ if __name__ == "__main__":
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    # Combine ranks with elapsed time and save to GCS
-    output_path = "gs://pagerank_bucket_100/output"
+
+    output_path = f"gs://pagerank_bucket_100/RDD/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     ranks.coalesce(1).saveAsTextFile(output_path)
 
     # Access the bucket
