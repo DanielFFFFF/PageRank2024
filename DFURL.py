@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Define the bucket and path for the text file
     bucket_name = "pagerank_bucket_100"
-    text_file_path = "output/elapsed_time.txt"
+    text_file_path = "output/elapsed_time_DFURL_nodes=" + str(num_nodes) + ".txt"
 
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
 
     # Appliquer une fonction de hashage à 'src' pour obtenir un partitionnement
-    links = links.withColumn("partition_id", hash("src") % num_nodes)
+    links = links.withColumn("partition_id", hash("src") % num_workers)
 
     # Repartitionner le DataFrame en fonction de la partition_id
     links = links.repartition(num_nodes, "partition_id").drop("partition_id")
@@ -78,16 +78,12 @@ if __name__ == "__main__":
     bucket = client.get_bucket(bucket_name)
     # Create a new blob (file) and upload the content
     blob = bucket.blob(text_file_path)
-    content_to_append = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF with URL partitioning\n"
+    content= f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF with URL partitioning\n"
 
-
-
-    current_content = blob.download_as_text()
-    new_content = current_content + content_to_append
 
 
     # Upload the new content back to the file
-    blob.upload_from_string(new_content)
+    blob.upload_from_string(content)
 
     # Finally, Stop Spark session
     spark.stop()

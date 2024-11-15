@@ -14,6 +14,7 @@ def parse_neighbors(line: str) -> Tuple[str, str]:
     return parts[0], parts[2]
 
 if __name__ == "__main__":
+    num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
 
     # Start timer & Initialise Spark session
     start_time = time.time()
@@ -21,7 +22,7 @@ if __name__ == "__main__":
 
     # Define the bucket and path for the text file
     bucket_name = "pagerank_bucket_100"
-    text_file_path = "output/elapsed_time.txt"
+    text_file_path = "output/elapsed_time_DF_nodes=" + str(num_nodes) + ".txt"
 
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
@@ -67,19 +68,15 @@ if __name__ == "__main__":
     # Access the bucket
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
-    num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
     # Create a new blob (file) and upload the content
     blob = bucket.blob(text_file_path)
-    content_to_append = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF without URL partitioning\n"
-
-
-
-    current_content = blob.download_as_text()
-    new_content = current_content + content_to_append
-
+    content = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF with URL partitioning\n"
 
     # Upload the new content back to the file
-    blob.upload_from_string(new_content)
+    blob.upload_from_string(content)
+
+    # Upload the new content back to the file
+    blob.upload_from_string(content)
 
     # Finally, Stop Spark session
     spark.stop()
