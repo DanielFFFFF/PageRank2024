@@ -25,7 +25,7 @@ gsutil mb -l $REGION gs://$BUCKET_NAME/ || echo "Bucket already exists."
 
 # Download the PySpark PageRank script using DataFrames with a timer
 rm DF.py
-curl https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
+curl -o DF.py https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
 
 # Copy the input file to the bucket
 gsutil cp $INPUT_FILE_PATH gs://$BUCKET_NAME/
@@ -37,6 +37,7 @@ for PYSCRIPT in *.py; do
     # Loop through 1 to 4 nodes configuration
     for WORKERS in 1 2 3 4; do
         echo "Creating cluster with $WORKERS worker node(s) for script $PYSCRIPT..."
+
         if [ $WORKERS -eq 1 ]; then
             # Create a single-node cluster (master node only, no workers)
             gcloud dataproc clusters create $CLUSTER_NAME \
