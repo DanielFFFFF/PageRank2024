@@ -27,7 +27,8 @@ gsutil mb -l $REGION gs://$BUCKET_NAME/
 # Copy the input file to the bucket
 gsutil cp $INPUT_FILE_PATH gs://$BUCKET_NAME/
 
-
+# Delete pagerank before downloading it
+rm -f $PAGERANK_SCRIPT
 # Download the PySpark PageRank script using DataFrames with a timer
 curl -o $PAGERANK_SCRIPT https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
 
