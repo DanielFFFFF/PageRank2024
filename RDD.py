@@ -37,15 +37,8 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # Initialize the spark context.
-    spark = SparkSession \
-        .builder \
-        .appName("PythonPageRank") \
-        .config("spark.ui.showConsoleProgress", "true") \
-        .config("spark.yarn.historyServer.allowTracking", "true") \
-        .config("spark.executor.heartbeatInterval", "86400") \
-        .config("spark.network.timeout", "86400") \
-        .config("spark.dynamicAllocation.executorIdleTimeout", "86400") \
-        .getOrCreate()
+
+    spark = SparkSession.builder.appName("PythonPageRank").getOrCreate()
 
 
 
