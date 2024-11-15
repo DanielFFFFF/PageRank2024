@@ -36,7 +36,7 @@ if __name__ == "__main__":
     links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
 
     # Appliquer une fonction de hashage à 'src' pour obtenir un partitionnement
-    links = links.withColumn("partition_id", hash("src") % num_workers)
+    links = links.withColumn("partition_id", hash("src") % num_nodes)
 
     # Repartitionner le DataFrame en fonction de la partition_id
     links = links.repartition(num_nodes, "partition_id").drop("partition_id")
