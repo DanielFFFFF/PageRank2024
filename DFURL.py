@@ -14,6 +14,7 @@ def parse_neighbors(line: str) -> Tuple[str, str]:
     return parts[0], parts[2]
 
 if __name__ == "__main__":
+    num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
 
     # Start timer & Initialise Spark session
     start_time = time.time()
@@ -34,6 +35,12 @@ if __name__ == "__main__":
     # Grouper par source pour créer une liste des liens sortants
     links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
 
+    # Appliquer une fonction de hashage à 'src' pour obtenir un partitionnement
+    links = links.withColumn("partition_id", hash("src") % num_workers)
+
+    # Repartitionner le DataFrame en fonction de la partition_id
+    links = links.repartition(num_nodes, "partition_id").drop("partition_id")
+
     # Initialiser les rangs avec une valeur de 1.0 pour chaque URL
     ranks = links.select("src").withColumn("rank", lit(1.0))
 
@@ -46,6 +53,8 @@ if __name__ == "__main__":
             explode(col("l.links")).alias("dst"),
             (col("r.rank") / size(col("l.links"))).alias("contrib")
         )
+
+        contribs = contribs.repartition(num_nodes, "dst")
 
         # Calcul des nouveaux rangs par agrégation des contributions
         ranks = contribs.groupBy("dst").agg(spark_sum("contrib").alias("rank"))
@@ -67,10 +76,9 @@ if __name__ == "__main__":
     # Access the bucket
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
-    num_nodes = int(sys.argv[3])  # New parameter for the number of nodes
     # Create a new blob (file) and upload the content
     blob = bucket.blob(text_file_path)
-    content_to_append = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF without URL partitioning\n"
+    content_to_append = f"Elapsed Time: {elapsed_time:.2f} seconds | Num Nodes: {num_nodes} | Method: DF with URL partitioning\n"
 
 
 
