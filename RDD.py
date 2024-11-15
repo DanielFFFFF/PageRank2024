@@ -67,7 +67,7 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
 
 
-    output_path = "gs://pagerank_bucket_100/RDD/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    output_path = f"gs://pagerank_bucket_100/RDD/output_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     ranks.saveAsTextFile(output_path)
 
     # Access the bucket
