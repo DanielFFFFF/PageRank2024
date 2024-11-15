@@ -37,7 +37,6 @@ for PYSCRIPT in *.py; do
     # Loop through 1 to 4 nodes configuration
     for WORKERS in 1 2 3 4; do
         echo "Creating cluster with $WORKERS worker node(s) for script $PYSCRIPT..."
-
         if [ $WORKERS -eq 1 ]; then
             # Create a single-node cluster (master node only, no workers)
             gcloud dataproc clusters create $CLUSTER_NAME \
