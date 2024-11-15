@@ -6,13 +6,10 @@ from pyspark.sql.functions import col, lit, sum as spark_sum
 from pyspark.sql import Row
 
 
-def split_neighbours(row):
-    parts = row.split()
-    if len(parts) < 3:
-        # Handle unexpected input, either by logging or returning a default value
-        print(f"Unexpected input format: {row}")
-        return (None, None)  # or use appropriate default/error handling
-    return (parts[0], parts[2])
+def parse_neighbors(line: str) -> Tuple[str, str]:
+    """Parse une ligne pour extraire une paire d'URLs."""
+    parts = re.split(r'\s+', line)
+    return parts[0], parts[2]
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -27,7 +24,7 @@ if __name__ == "__main__":
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
     iterations = 10
     lines = spark.read.text(input_path)
-    neighbours_df = lines.rdd.map(lambda row: split_neighbours(row[0])).toDF(["url", "neighbour"])
+    neighbours_df = lines.rdd.map(lambda row: parse_neighbors(row[0])).toDF(["url", "neighbour"])
     links = lines.rdd.map(lambda row: parse_neighbors(row.value)).toDF(["src", "dst"])
 
     # Grouper par source pour créer une liste des liens sortants
