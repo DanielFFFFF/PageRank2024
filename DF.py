@@ -45,10 +45,6 @@ if __name__ == "__main__":
             (col("r.rank") / size(col("l.links"))).alias("contrib")
         )
 
-        # Repartitionner les contributions avant l'agrégation pour éviter les shuffles si partitionnement activé
-        if use_partition:
-            contribs = contribs.repartition(num_workers, "dst")
-
         # Calcul des nouveaux rangs par agrégation des contributions
         ranks = contribs.groupBy("dst").agg(spark_sum("contrib").alias("rank"))
 
