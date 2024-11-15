@@ -28,6 +28,10 @@ if __name__ == "__main__":
     iterations = 10
     lines = spark.read.text(input_path)
     neighbours_df = lines.rdd.map(lambda row: split_neighbours(row[0])).toDF(["url", "neighbour"])
+    links = lines.rdd.map(lambda row: parse_neighbors(row.value)).toDF(["src", "dst"])
+
+    # Grouper par source pour créer une liste des liens sortants
+    links = links.groupBy("src").agg(F.collect_list("dst").alias("links"))
 
     # Initialise ranks with 1.0 for each URL
     ranks_df = neighbours_df.select("url").distinct().withColumn("rank", lit(1.0))
