@@ -10,14 +10,12 @@ une basée sur des DataFrames et l'autre sur des RDDs. Nous avons testé les deu
 ### Résultat avec https://raw.githubusercontent.com/momo54/large_scale_data_management/main/small_page_links.nt
 |          Number of Nodes :          |  1 |  2 |  4 |
 |:-----------------------------------:|:--:|:--:|:--:|
-| DataFrames with URL partitioning    | 22 | 35 | 37 |
-| DataFrames without URL partitioning | 56 | 36 | 34 |
-| RDD with URL partitioning           | 18 |    |    |
-| RDD without URL partitioning        |    |    |    |
+| DataFrames with URL partitioning    | 56.41 | 36.05 | 34.75 |
+| DataFrames without URL partitioning | 61.04 | 37.44 | 35.09 |
+| RDD with URL partitioning        | 34.12 |  20.79 | 19.84 |
+| RDD without URL partitioning           | 21.95 | 18.83   |  18.75   |
 
-\[Image graphe\]
-
-
+![Graphes de performance](https://github.com/user-attachments/assets/78a4d42d-066e-429c-872d-6844869c3a3c)
 
 ## Entitées avec les plus gros page rank :
 ### Avec https://raw.githubusercontent.com/momo54/large_scale_data_management/main/small_page_links.nt  
