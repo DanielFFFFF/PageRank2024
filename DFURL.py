@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Define the bucket and path for the text file
     bucket_name = "pagerank_bucket_100"
-    text_file_path = "output/elapsed_time_DFURL_nodes=" + str(num_nodes) + ".txt"
+    text_file_path = "times/elapsed_time_DFURL_nodes=" + str(num_nodes) + ".txt"
 
     # Read input file and parse neighbours
     input_path = "gs://pagerank_bucket_100/small_page_links.nt"
