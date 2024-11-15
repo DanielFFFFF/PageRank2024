@@ -41,7 +41,7 @@ if __name__ == "__main__":
         .config("spark.speculation", "true") \
         .getOrCreate()
 
-    SC = spark.sparkContext
+    sc = spark.sparkContext
 
     # Chargement et parsing du fichier d'entrée
     lines = sc.textFile("gs://" + bucket_name + "/" + input_path)
