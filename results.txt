@@ -1,3 +1,8 @@
 1 cluster
 
 DF without URL partitionning : Elapsed Time: 49.35 seconds
+
+
+
+4 nodes :
+DF without URL partitionning : Elapsted Time : Elapsed Time: 32.03 seconds
