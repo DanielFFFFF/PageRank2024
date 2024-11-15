@@ -3,8 +3,9 @@ import sys
 import time
 from pyspark.sql import SparkSession
 from typing import Tuple
-from pyspark.sql.functions import col, lit, sum as spark_sum
-from pyspark.sql import Row
+from pyspark.sql.functions import col, explode, lit, sum as spark_sum, size, hash
+from pyspark.sql import functions as F
+
 
 
 def parse_neighbors(line: str) -> Tuple[str, str]:
