@@ -32,14 +32,17 @@ rm -f $PAGERANK_SCRIPT
 # Download the PySpark PageRank script using DataFrames with a timer
 curl -o $PAGERANK_SCRIPT https://raw.githubusercontent.com/DanielFFFFF/PageRank2024/refs/heads/main/DF.py
 
-# Create a minimal single-node Dataproc cluster
+# Create a 4 node cluster
 gcloud dataproc clusters create $CLUSTER_NAME \
     --region=$REGION \
     --zone=$ZONE \
-    --single-node \
     --master-machine-type=n1-standard-2 \
     --master-boot-disk-size=50GB \
+    --num-workers=3 \
+    --worker-machine-type=n1-standard-2 \
+    --worker-boot-disk-size=50GB \
     --image-version=2.0-debian10
+
 
 # Submit the PySpark job to the cluster
 gcloud dataproc jobs submit pyspark $PAGERANK_SCRIPT \
